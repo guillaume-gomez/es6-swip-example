@@ -28,3 +28,5 @@ class App extends React.Component {
 }
 
 render(<App/>, document.getElementById('app'));
+
+console.log("iiiiii")
