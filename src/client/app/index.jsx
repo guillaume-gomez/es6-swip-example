@@ -1,16 +1,5 @@
 import React from 'react';
-import { Navbar, MenuItem, Nav, NavDropdown, NavItem } from 'react-bootstrap';
 import { render } from 'react-dom';
-
-import AboutMe from "./AboutMe.react";
-import Resume from "./Resume.react";
-import StudentProjects from "./StudentProjects.react";
-import PersonalProjects from "./PersonalProjects.react";
-import Contribution from "./Contribution.react";
-
-import { t } from "./Translations";
-
-const Pages = [ "aboutMe" , "resume", "studentProjects", "personalProjects", "contribution"];
 
 class App extends React.Component {
 
