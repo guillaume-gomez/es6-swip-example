@@ -9,28 +9,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="col-xs-9">
-      <div id="content" class="col-xs-12"></div>
-    </div>
-    <div class="col-xs-3">
-      <form onsubmit="event.preventDefault(); startGame();" >
-        <div class="form-group row">
-          <div class="col-xs-9">
-            <label for="speed" class="col-xs-3 col-form-label"> Speed m/s </label>
-            <input id="speed" type="range" min="10" max="2000" value="500" step="5" oninput="showValue(this.value, 'rangeSpeed')" onchange="showValue(this.value, 'rangeSpeed')" />
-            <span id="rangeSpeed">500</span>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-xs-9">
-            <label for="grid"  class="col-xs-3 col-form-label"> Size grid </label>
-            <input id="grid" type="range" min="10" max="51" value="10" step="1" oninput="showValue(this.value, 'gridSize')" onchange="showValue(this.value, 'gridSize')" />
-            <span id="gridSize">10</span>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Launch</button>
-      </form>
-    </div>
+    <div id="content"></div>
   </div>
   <script src="scripts/phaser.min.js"></script>
   <script src="scripts/game.js"></script>
