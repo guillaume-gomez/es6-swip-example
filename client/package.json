@@ -33,6 +33,7 @@
     "yargs": "^4.6.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0"
+    "babel-cli": "^6.18.0",
+    "phaser": "^2.4.7"
   }
 }
