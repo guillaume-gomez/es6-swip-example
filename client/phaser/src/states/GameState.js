@@ -135,7 +135,7 @@ class GameState extends Phaser.State {
     bmdTop.ctx.lineTo(width + transformX, transformY);
     bmdTop.ctx.stroke();
     this.top = this.game.add.sprite(0, 0, bmdTop);
-    this.top = this.game.add.sprite(0, height - lineWidth/2, bmdTop);
+    this.bottom = this.game.add.sprite(0, height - lineWidth/2, bmdTop);
   }
 
   openingSort (openingA, openingB) {
