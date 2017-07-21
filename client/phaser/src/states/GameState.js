@@ -8,7 +8,12 @@ class GameState extends Phaser.State {
 	create() {
 		this.game.world.setBounds(0, 0, Bounds, Bounds);
 		this.cursors = this.game.input.keyboard.createCursorKeys();
-    this.initCamera();
+		this.game.stage.backgroundColor = '#80d735';
+    	//this.initCamera();
+    	this.ball =  { x: 50, y: 50, radius: 10, speedX: 0, speedY: 0 };
+    	this.hole = { x: 200, y: 200, radius: 15 };
+    	this.drawBall(this.ball);
+    	this.drawHole(this.hole);
 	}
 
   initCamera() {
@@ -38,36 +43,38 @@ class GameState extends Phaser.State {
 	}
 
 	drawBall (ball) {
-		var bmd = game.add.bitmapData(128,128);
-    //ctx.save();
+	const bmd = this.game.add.bitmapData(100, 100);
 
     bmd.ctx.fillStyle = '#fff';
     bmd.ctx.shadowBlur = 10;
-    bmdd.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    bmd.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
 
     bmd.ctx.beginPath();
-    bmd.ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+    bmd.ctx.arc(ball.radius, ball.radius, ball.radius, 0, 2 * Math.PI);
     bmd.ctx.fill();
 
-    var sprite = game.add.sprite(200, 200, bmd);
+    const sprite = this.game.add.sprite(ball.x, ball.y, bmd);
+    console.log(sprite)
   }
 
-  
   drawHole (hole) {
-    var bmd = game.add.bitmapData(128,128);
+    const bmd = this.game.add.bitmapData(300, 300);
 
     bmd.ctx.fillStyle = 'black';
     bmd.ctx.strokeStyle = '#4b7f1f';
     bmd.ctx.lineWidth = 2;
 
     bmd.ctx.beginPath();
-    bmd.ctx.arc(hole.x, hole.y, hole.radius, 0, 2 * Math.PI);
+    bmd.ctx.arc(hole.radius, hole.radius, hole.radius, 0, 2 * Math.PI);
     bmd.ctx.fill();
     bmd.ctx.stroke();
+
+    const sprite = this.game.add.sprite(hole.x, hole.y, bmd);
   }
 
 	render() {
 		//this.game.debug.spriteBounds(this.ant);
+		//this.game.debug.pointer( this.game.input.activePointer );
         this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
 	}
 
