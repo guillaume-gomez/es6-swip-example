@@ -18,8 +18,9 @@ class GameState extends Phaser.State {
     		transform: { x: 0, y: 0 },
     		adjacentClientIDs: [],
     		clusterID: 'r8x2vaa',
-    		openings: { top: [], bottom: [], right: [], left: [] },
-    		data: { rotationX: 0, rotationY: 0 }
+    		//openings: {"left":[],"top":[],"right":[{"start":0,"end":363.63686948275586}],"bottom":[]},
+    		openings: {"left":[],"top":[],"right":[],"bottom":[]},
+        data: { rotationX: 0, rotationY: 0 }
     	}
 
     	this.drawBall(this.ball);
@@ -83,23 +84,13 @@ class GameState extends Phaser.State {
     const sprite = this.game.add.sprite(hole.x, hole.y, bmd);
   }
 
-  drawWalls (client) {
-  	//TODO openings
-    const openings = client.openings;
-    const transformX = client.transform.x;
-    const transformY = client.transform.y;
-    const width = client.size.width;
-    const height = client.size.height;
-
-    const lineWidth = 40
-
+  drawLeft(openings, transformX, transformY, width, height, lineWidth = 40) {
     const bmdLeft = this.game.add.bitmapData(lineWidth/2, height);
     bmdLeft.ctx.lineWidth = lineWidth;
     bmdLeft.ctx.shadowColor = '#dba863';
     bmdLeft.ctx.shadowBlur = 10;
     bmdLeft.ctx.strokeStyle = '#ffde99';
 
-    // left
     bmdLeft.ctx.beginPath();
     bmdLeft.ctx.moveTo(transformX, transformY);
 
@@ -114,9 +105,31 @@ class GameState extends Phaser.State {
     bmdLeft.ctx.stroke();
 
     this.left = this.game.add.sprite(0, 0, bmdLeft);
-    this.right = this.game.add.sprite(width - lineWidth/2, 0, bmdLeft);
+  }
 
-    // top
+  drawRight(openings, transformX, transformY, width, height, lineWidth = 40) {
+    const bmdRight = this.game.add.bitmapData(lineWidth/2, height);
+    bmdRight.ctx.lineWidth = lineWidth;
+    bmdRight.ctx.shadowColor = '#dba863';
+    bmdRight.ctx.shadowBlur = 10;
+    bmdRight.ctx.strokeStyle = '#ffde99';
+
+    bmdRight.ctx.beginPath();
+    bmdRight.ctx.moveTo(transformX, transformY);
+
+    openings.right.sort(this.openingSort).forEach(function (opening) {
+      bmdRight.ctx.lineTo(width + transformX, opening.start + transformY);
+      bmdRight.ctx.stroke();
+      bmdRight.ctx.beginPath();
+      bmdRight.ctx.moveTo(width + transformX, opening.end + transformY);
+    });
+
+    bmdRight.ctx.lineTo(transformX, height + transformY);
+    bmdRight.ctx.stroke();
+    this.right = this.game.add.sprite(width - lineWidth/2, 0, bmdRight);
+  }
+
+  drawTop(openings, transformX, transformY, width, height, lineWidth = 40) {
     const bmdTop = this.game.add.bitmapData(width, lineWidth/2);
     bmdTop.ctx.lineWidth = lineWidth;
     bmdTop.ctx.shadowColor = '#dba863';
@@ -135,7 +148,42 @@ class GameState extends Phaser.State {
     bmdTop.ctx.lineTo(width + transformX, transformY);
     bmdTop.ctx.stroke();
     this.top = this.game.add.sprite(0, 0, bmdTop);
-    this.bottom = this.game.add.sprite(0, height - lineWidth/2, bmdTop);
+  }
+
+  drawBottom(openings, transformX, transformY, width, height, lineWidth = 40) {
+    const bmdBottom = this.game.add.bitmapData(width, lineWidth/2);
+    bmdBottom.ctx.lineWidth = lineWidth;
+    bmdBottom.ctx.shadowColor = '#dba863';
+    bmdBottom.ctx.shadowBlur = 10;
+    bmdBottom.ctx.strokeStyle = '#ffde99';
+    bmdBottom.ctx.beginPath();
+    bmdBottom.ctx.moveTo(transformX, transformY);
+
+    openings.bottom.sort(this.openingSort).forEach(function (opening) {
+      bmdBottom.ctx.lineTo(opening.start + transformX, height + transformY);
+      bmdBottom.ctx.stroke();
+      bmdBottom.ctx.beginPath();
+      bmdBottom.ctx.moveTo(opening.end + transformX, height + transformY);
+    });
+
+    bmdBottom.ctx.lineTo(width + transformX, transformY);
+    bmdBottom.ctx.stroke();
+    this.top = this.game.add.sprite(0, height - lineWidth/2, bmdBottom);
+  }
+
+  drawWalls (client) {
+  	//TODO openings
+    const openings = client.openings;
+    const transformX = client.transform.x;
+    const transformY = client.transform.y;
+    const width = client.size.width;
+    const height = client.size.height;
+
+    const lineWidth = 40
+    this.drawLeft(openings, transformX, transformY, width, height, lineWidth);
+    this.drawRight(openings, transformX, transformY, width, height, lineWidth);
+    this.drawTop(openings, transformX, transformY, width, height, lineWidth);
+    this.drawBottom(openings, transformX, transformY, width, height, lineWidth);
   }
 
   openingSort (openingA, openingB) {
@@ -143,9 +191,8 @@ class GameState extends Phaser.State {
   }
 
 	render() {
-		//this.game.debug.spriteBounds(this.ant);
 		//this.game.debug.pointer( this.game.input.activePointer );
-		this.game.debug.spriteBounds(this.right, "#AAAAAA", false);
+		//this.game.debug.spriteBounds(this.right, "#AAAAAA", false);
 	  this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
 	}
 
