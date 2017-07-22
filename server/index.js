@@ -38,7 +38,6 @@ swip(io, {
           if (Math.abs(client.data.rotationY) > ANGLE_INACCURACY) {
             downhillAccelerationY = (client.data.rotationY - ANGLE_INACCURACY) * DOWNHILL_ACCELERATION_SCALE;
           }
-
           // update speed and position if collision happens
           if (((ball.speedX < 0) &&
             ((nextPosX - boundaryOffset) < client.transform.x) &&
@@ -158,7 +157,7 @@ function isInsideHole (hole, ball) {
   return distance <= hole.radius && speed < SPEED_THRESHOLD;
 }
 
-server.listen(3000);
+server.listen(4000);
 
 // eslint-disable-next-line no-console
-console.log('started server: http://localhost:3000');
+console.log('started server: http://localhost:4000');
