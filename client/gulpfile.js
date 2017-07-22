@@ -16,10 +16,10 @@ var browserSync = require('browser-sync');
  * Using different folders/file names? Change these constants:
  */
 var PHASER_PATH = './node_modules/phaser/build/';
-var BUILD_PATH = './phaser/build';
+var BUILD_PATH = './src/client/public';
 var SCRIPTS_PATH = BUILD_PATH + '/scripts';
-var SOURCE_PATH = './phaser/src';
-var STATIC_PATH = './phaser/static';
+var SOURCE_PATH = './src/client/app/phaser/src';
+var STATIC_PATH = './src/client/app/phaser/static';
 var ENTRY_FILE = SOURCE_PATH + '/index.js';
 var OUTPUT_FILE = 'game.js';
 
@@ -36,7 +36,6 @@ function isProduction() {
  * Logs the current build mode on the console.
  */
 function logBuildMode() {
-    
     if (isProduction()) {
         gutil.log(gutil.colors.green('Running production build...'));
     } else {

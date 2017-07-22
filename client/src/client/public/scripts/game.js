@@ -1,0 +1,329 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var CellWidth = exports.CellWidth = 50;
+var ElapsedTime = exports.ElapsedTime = 500;
+var SizeTerrain = exports.SizeTerrain = 51;
+var WidthCanvas = exports.WidthCanvas = 800;
+var HeighCanvas = exports.HeighCanvas = 500;
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _GameState = require('./states/GameState');
+
+var _GameState2 = _interopRequireDefault(_GameState);
+
+var _constants = require('./constants');
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+	if (!(instance instanceof Constructor)) {
+		throw new TypeError("Cannot call a class as a function");
+	}
+}
+
+function _possibleConstructorReturn(self, call) {
+	if (!self) {
+		throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	}return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+	if (typeof superClass !== "function" && superClass !== null) {
+		throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var Game = function (_Phaser$Game) {
+	_inherits(Game, _Phaser$Game);
+
+	function Game() {
+		_classCallCheck(this, Game);
+
+		var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, _constants.WidthCanvas, _constants.HeighCanvas, Phaser.AUTO, 'content', null));
+
+		_this.state.add('GameState', _GameState2.default, false);
+		_this.state.start('GameState');
+		return _this;
+	}
+
+	return Game;
+}(Phaser.Game);
+
+new Game();
+
+},{"./constants":1,"./states/GameState":3}],3:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _constants = require('../constants');
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var CameraVelocity = 10;
+var Bounds = _constants.WidthCanvas; //CellWidth * SizeTerrain;
+
+var GameState = function (_Phaser$State) {
+  _inherits(GameState, _Phaser$State);
+
+  function GameState() {
+    _classCallCheck(this, GameState);
+
+    return _possibleConstructorReturn(this, (GameState.__proto__ || Object.getPrototypeOf(GameState)).apply(this, arguments));
+  }
+
+  _createClass(GameState, [{
+    key: 'create',
+    value: function create() {
+      this.game.world.setBounds(0, 0, _constants.WidthCanvas, _constants.HeighCanvas);
+      this.cursors = this.game.input.keyboard.createCursorKeys();
+      this.game.stage.backgroundColor = '#80d735';
+      //this.initCamera();
+      this.ball = { x: 50, y: 50, radius: 10, speedX: 0, speedY: 0 };
+      this.hole = { x: 200, y: 200, radius: 15 };
+      this.client = {
+        id: 'htm970h',
+        size: { width: _constants.WidthCanvas, height: _constants.HeighCanvas },
+        transform: { x: 0, y: 0 },
+        //transform: { x: -640.0799999999999, y: -88.0846593284227 },
+        adjacentClientIDs: [],
+        clusterID: 'r8x2vaa',
+        //openings: {"left":[],"top":[],"right":[{"start":0,"end":363.63686948275586}],"bottom":[]},
+        openings: { "left": [{ "start": 100, "end": 363.63686948275586 }], "top": [{ "start": 100, "end": 363.63686948275586 }], "right": [{ "start": 100, "end": 363.63686948275586 }], "bottom": [{ "start": 100, "end": 363.63686948275586 }] },
+        data: { rotationX: 0, rotationY: 0 }
+      };
+
+      this.drawBall(this.ball);
+      this.drawHole(this.hole);
+      this.drawWalls(this.client);
+    }
+  }, {
+    key: 'initCamera',
+    value: function initCamera() {
+      this.game.camera.x = this.game.world.width / 2 - _constants.WidthCanvas / 2;
+      this.game.camera.y = this.game.world.height / 2 - _constants.HeighCanvas / 2;
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+
+      if (this.cursors.up.isDown) {
+        this.game.camera.y -= CameraVelocity;
+      } else if (this.cursors.down.isDown) {
+        this.game.camera.y += CameraVelocity;
+      }
+
+      if (this.cursors.left.isDown) {
+        this.game.camera.x -= CameraVelocity;
+      } else if (this.cursors.right.isDown) {
+        this.game.camera.x += CameraVelocity;
+      }
+    }
+  }, {
+    key: 'drawBall',
+    value: function drawBall(ball) {
+      var bmd = this.game.add.bitmapData(100, 100);
+
+      bmd.ctx.fillStyle = '#fff';
+      bmd.ctx.shadowBlur = 10;
+      bmd.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+
+      bmd.ctx.beginPath();
+      bmd.ctx.arc(ball.radius, ball.radius, ball.radius, 0, 2 * Math.PI);
+      bmd.ctx.fill();
+
+      var sprite = this.game.add.sprite(ball.x, ball.y, bmd);
+      console.log(sprite);
+    }
+  }, {
+    key: 'drawHole',
+    value: function drawHole(hole) {
+      var bmd = this.game.add.bitmapData(300, 300);
+
+      bmd.ctx.fillStyle = 'black';
+      bmd.ctx.strokeStyle = '#4b7f1f';
+      bmd.ctx.lineWidth = 2;
+
+      bmd.ctx.beginPath();
+      bmd.ctx.arc(hole.radius, hole.radius, hole.radius, 0, 2 * Math.PI);
+      bmd.ctx.fill();
+      bmd.ctx.stroke();
+
+      var sprite = this.game.add.sprite(hole.x, hole.y, bmd);
+    }
+  }, {
+    key: 'drawLeft',
+    value: function drawLeft(openings, transformX, transformY, width, height) {
+      var lineWidth = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 40;
+
+      var bmdLeft = this.game.add.bitmapData(lineWidth / 2, height);
+      bmdLeft.ctx.lineWidth = lineWidth;
+      bmdLeft.ctx.shadowColor = '#dba863';
+      bmdLeft.ctx.shadowBlur = 10;
+      bmdLeft.ctx.strokeStyle = '#ffde99';
+
+      bmdLeft.ctx.beginPath();
+      bmdLeft.ctx.moveTo(transformX, transformY);
+
+      openings.left.sort(this.openingSort).forEach(function (opening) {
+        bmdLeft.ctx.lineTo(transformX, opening.start + transformY);
+        bmdLeft.ctx.stroke();
+        bmdLeft.ctx.beginPath();
+        bmdLeft.ctx.moveTo(transformX, opening.end + transformY);
+      });
+
+      bmdLeft.ctx.lineTo(transformX, height + transformY);
+      bmdLeft.ctx.stroke();
+
+      this.left = this.game.add.sprite(0, 0, bmdLeft);
+    }
+  }, {
+    key: 'drawRight',
+    value: function drawRight(openings, transformX, transformY, width, height) {
+      var lineWidth = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 40;
+
+      var bmdRight = this.game.add.bitmapData(lineWidth / 2, height);
+      bmdRight.ctx.lineWidth = lineWidth;
+      bmdRight.ctx.shadowColor = '#dba863';
+      bmdRight.ctx.shadowBlur = 10;
+      bmdRight.ctx.strokeStyle = '#ffde99';
+
+      bmdRight.ctx.beginPath();
+      bmdRight.ctx.moveTo(transformX, transformY);
+
+      openings.right.sort(this.openingSort).forEach(function (opening) {
+        bmdRight.ctx.lineTo(transformX, opening.start + transformY);
+        bmdRight.ctx.stroke();
+        bmdRight.ctx.beginPath();
+        bmdRight.ctx.moveTo(transformX, opening.end + transformY);
+      });
+
+      bmdRight.ctx.lineTo(transformX, height + transformY);
+      bmdRight.ctx.stroke();
+      this.right = this.game.add.sprite(width - lineWidth / 2, 0, bmdRight);
+    }
+  }, {
+    key: 'drawTop',
+    value: function drawTop(openings, transformX, transformY, width, height) {
+      var lineWidth = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 40;
+
+      var bmdTop = this.game.add.bitmapData(width, lineWidth / 2);
+      bmdTop.ctx.lineWidth = lineWidth;
+      bmdTop.ctx.shadowColor = '#dba863';
+      bmdTop.ctx.shadowBlur = 10;
+      bmdTop.ctx.strokeStyle = '#ffde99';
+      bmdTop.ctx.beginPath();
+      bmdTop.ctx.moveTo(transformX, transformY);
+
+      openings.top.sort(this.openingSort).forEach(function (opening) {
+        bmdTop.ctx.lineTo(opening.start + transformX, transformY);
+        bmdTop.ctx.stroke();
+        bmdTop.ctx.beginPath();
+        bmdTop.ctx.moveTo(opening.end + transformX, transformY);
+      });
+
+      bmdTop.ctx.lineTo(width + transformX, transformY);
+      bmdTop.ctx.stroke();
+      this.top = this.game.add.sprite(0, 0, bmdTop);
+    }
+  }, {
+    key: 'drawBottom',
+    value: function drawBottom(openings, transformX, transformY, width, height) {
+      var lineWidth = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 40;
+
+      var bmdBottom = this.game.add.bitmapData(width, lineWidth / 2);
+      bmdBottom.ctx.lineWidth = lineWidth;
+      bmdBottom.ctx.shadowColor = '#dba863';
+      bmdBottom.ctx.shadowBlur = 10;
+      bmdBottom.ctx.strokeStyle = '#ffde99';
+      bmdBottom.ctx.beginPath();
+      bmdBottom.ctx.moveTo(transformX, transformY);
+
+      openings.bottom.sort(this.openingSort).forEach(function (opening) {
+        bmdBottom.ctx.lineTo(opening.start + transformX, transformY);
+        bmdBottom.ctx.stroke();
+        bmdBottom.ctx.beginPath();
+        bmdBottom.ctx.moveTo(opening.end + transformX, transformY);
+      });
+
+      bmdBottom.ctx.lineTo(width + transformX, transformY);
+      bmdBottom.ctx.stroke();
+      this.top = this.game.add.sprite(0, height - lineWidth / 2, bmdBottom);
+    }
+  }, {
+    key: 'drawWalls',
+    value: function drawWalls(client) {
+      //TODO openings
+      var openings = client.openings;
+      var transformX = client.transform.x;
+      var transformY = client.transform.y;
+      var width = client.size.width;
+      var height = client.size.height;
+
+      var lineWidth = 40;
+      this.drawLeft(openings, transformX, transformY, width, height, lineWidth);
+      this.drawRight(openings, transformX, transformY, width, height, lineWidth);
+      this.drawTop(openings, transformX, transformY, width, height, lineWidth);
+      this.drawBottom(openings, transformX, transformY, width, height, lineWidth);
+    }
+  }, {
+    key: 'openingSort',
+    value: function openingSort(openingA, openingB) {
+      return openingB.start - openingA.start;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      //this.game.debug.pointer( this.game.input.activePointer );
+      //this.game.debug.spriteBounds(this.right, "#AAAAAA", false);
+      this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
+    }
+  }]);
+
+  return GameState;
+}(Phaser.State);
+
+exports.default = GameState;
+
+},{"../constants":1}]},{},[2])
+//# sourceMappingURL=game.js.map
