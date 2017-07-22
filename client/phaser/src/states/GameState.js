@@ -19,7 +19,7 @@ class GameState extends Phaser.State {
     		adjacentClientIDs: [],
     		clusterID: 'r8x2vaa',
     		//openings: {"left":[],"top":[],"right":[{"start":0,"end":363.63686948275586}],"bottom":[]},
-    		openings: {"left":[],"top":[],"right":[],"bottom":[]},
+    		openings: {"left":[{"start":100,"end":363.63686948275586}],"top":[{"start":100,"end":363.63686948275586}],"right":[{"start":100,"end":363.63686948275586}],"bottom":[{"start":100,"end":363.63686948275586}]},
         data: { rotationX: 0, rotationY: 0 }
     	}
 
@@ -118,10 +118,10 @@ class GameState extends Phaser.State {
     bmdRight.ctx.moveTo(transformX, transformY);
 
     openings.right.sort(this.openingSort).forEach(function (opening) {
-      bmdRight.ctx.lineTo(width + transformX, opening.start + transformY);
+      bmdRight.ctx.lineTo(transformX, opening.start + transformY);
       bmdRight.ctx.stroke();
       bmdRight.ctx.beginPath();
-      bmdRight.ctx.moveTo(width + transformX, opening.end + transformY);
+      bmdRight.ctx.moveTo(transformX, opening.end + transformY);
     });
 
     bmdRight.ctx.lineTo(transformX, height + transformY);
@@ -160,10 +160,10 @@ class GameState extends Phaser.State {
     bmdBottom.ctx.moveTo(transformX, transformY);
 
     openings.bottom.sort(this.openingSort).forEach(function (opening) {
-      bmdBottom.ctx.lineTo(opening.start + transformX, height + transformY);
+      bmdBottom.ctx.lineTo(opening.start + transformX, transformY);
       bmdBottom.ctx.stroke();
       bmdBottom.ctx.beginPath();
-      bmdBottom.ctx.moveTo(opening.end + transformX, height + transformY);
+      bmdBottom.ctx.moveTo(opening.end + transformX, transformY);
     });
 
     bmdBottom.ctx.lineTo(width + transformX, transformY);
