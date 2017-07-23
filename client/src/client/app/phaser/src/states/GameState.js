@@ -202,7 +202,7 @@ class GameState extends Phaser.State {
   }
 
   drawWalls (client) {
-  	//TODO openings
+    //TODO openings
     const openings = client.openings;
     const transformX = client.transform.x;
     const transformY = client.transform.y;
