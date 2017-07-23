@@ -111,7 +111,7 @@ class GameState extends Phaser.State {
     bmd.ctx.fill();
     bmd.ctx.stroke();
 
-    const sprite = this.game.add.sprite(hole.x, hole.y, bmd);
+    this.holeSprite = this.game.add.sprite(hole.x, hole.y, bmd);
   }
 
   drawLeft(openings, transformX, transformY, width, height, lineWidth = 40) {
@@ -220,11 +220,11 @@ class GameState extends Phaser.State {
     return openingB.start - openingA.start;
   }
 
-	render() {
-		//this.game.debug.pointer( this.game.input.activePointer );
-		//this.game.debug.spriteBounds(this.right, "#AAAAAA", false);
-	  this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
-	}
+  render() {
+    //this.game.debug.pointer( this.game.input.activePointer );
+    //this.game.debug.spriteBounds(this.right, "#AAAAAA", false);
+    this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
+  }
 
 
 }
