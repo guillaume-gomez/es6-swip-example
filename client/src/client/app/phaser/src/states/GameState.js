@@ -99,9 +99,19 @@ class GameState extends Phaser.State {
     console.log(sprite)
   }
 
-  drawHole (hole) {
-    const bmd = this.game.add.bitmapData(300, 300);
+  applyTransform (ctx, converter, transform) {
+    ctx.translate(- this.toDevicePixel(converter, transform.x), -this.toDevicePixel(converter, transform.y));
+    ctx.scale(this.toDevicePixel(converter, 1), this.toDevicePixel(converter, 1));
 
+  }
+
+  toDevicePixel (converter, value) {
+    return value / converter.scalingFactor;
+  }
+
+  drawHole (hole, converter, transform) {
+    const bmd = this.game.add.bitmapData(300, 300);
+    this.applyTransform(bmd.ctx, converter, transform)
     bmd.ctx.fillStyle = 'black';
     bmd.ctx.strokeStyle = '#4b7f1f';
     bmd.ctx.lineWidth = 2;
