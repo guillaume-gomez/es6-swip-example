@@ -1,62 +1,91 @@
-import { CellWidth, ElapsedTime, SizeTerrain, WidthCanvas, HeighCanvas } from '../constants';
+import { CellWidth, ElapsedTime, SizeTerrain, WidthCanvas, HeighCanvas, initialStateMock } from '../constants';
 
 const CameraVelocity = 10;
 const Bounds = WidthCanvas;//CellWidth * SizeTerrain;
 
 class GameState extends Phaser.State {
 
-	create() {
-		this.game.world.setBounds(0, 0, WidthCanvas, HeighCanvas);
-		this.cursors = this.game.input.keyboard.createCursorKeys();
-		this.game.stage.backgroundColor = '#80d735';
-    	//this.initCamera();
-    	this.ball =  { x: 50, y: 50, radius: 10, speedX: 0, speedY: 0 };
-    	this.hole = { x: 200, y: 200, radius: 15 };
-    	this.client = {
-    		id: 'htm970h',
-    		size: { width: WidthCanvas, height: HeighCanvas },
-    		transform: { x: 0, y: 0 },
-        //transform: { x: -640.0799999999999, y: -88.0846593284227 },
-        adjacentClientIDs: [],
-    		clusterID: 'r8x2vaa',
-    		//openings: {"left":[],"top":[],"right":[{"start":0,"end":363.63686948275586}],"bottom":[]},
-    		openings: {"left":[{"start":100,"end":363.63686948275586}],"top":[{"start":100,"end":363.63686948275586}],"right":[{"start":100,"end":363.63686948275586}],"bottom":[{"start":100,"end":363.63686948275586}]},
-        data: { rotationX: 0, rotationY: 0 }
-    	}
+  initSwip(game) {
+    return (client) => {
+      let converter = client.converter;
+      let stage = client.stage;
+      let ctx = stage.getContext('2d');
+      const transform = {x: 0, y: 0};
 
-    	this.drawBall(this.ball);
-    	this.drawHole(this.hole);
-    	this.drawWalls(this.client)
-	}
+      const hole = { x: 200, y: 200, radius: 15 };
+      let state = {client: initialStateMock};
+      let dragPosition = null;
+      let dragging = false;
+
+      game.drawHole(hole, converter, transform);
+      client.onClick((evt) => {
+        var hole = { x: evt.position.x, y: evt.position.y };
+        client.emit('setHole', hole);
+      });
+
+      const myFn = (game) => {
+        return (evt) => {
+          state = evt;
+          const client = state.client;
+          const { ball, hole } = state.cluster.data;
+          // if(game.holeSprite.position.x !== game.toDevicePixel(converter,hole.x)) {
+          //   alert(game.toDevicePixel(converter,hole.x), game.toDevicePixel(converter,hole.y));
+          // }
+          //console.log(game.toDevicePixel(converter,hole.x), game.toDevicePixel(converter,hole.y));
+          game.holeSprite.position.setTo(game.toDevicePixel(converter,hole.x), game.toDevicePixel(converter,hole.y));
+        };
+      }
+
+      client.onUpdate(myFn(game));
+    }
+  }
+
+  init() {
+    this.socket = io.connect();
+    swip.init({ socket: this.socket, container: document.getElementsByTagName("canvas")[0], type: "custom" }, this.initSwip(this));
+  }
+
+  create() {
+    this.game.world.setBounds(0, 0, WidthCanvas, HeighCanvas);
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+    this.game.stage.backgroundColor = '#80d735';
+      //this.initCamera();
+      this.ball =  { x: 50, y: 50, radius: 10, speedX: 0, speedY: 0 };
+      this.hole = { x: 200, y: 200, radius: 15 };
+      this.client = initialStateMock;
+      this.drawBall(this.ball);
+      this.drawWalls(this.client);
+
+  }
 
   initCamera() {
     this.game.camera.x = this.game.world.width / 2 - WidthCanvas / 2;
     this.game.camera.y = this.game.world.height / 2 - HeighCanvas / 2;
   }
 
-	update() {
+  update() {
 
-	    if (this.cursors.up.isDown)
-	    {
-	      this.game.camera.y -= CameraVelocity;
-	    }
-	    else if (this.cursors.down.isDown)
-	    {
-	      this.game.camera.y += CameraVelocity;
-	    }
+      if (this.cursors.up.isDown)
+      {
+        this.game.camera.y -= CameraVelocity;
+      }
+      else if (this.cursors.down.isDown)
+      {
+        this.game.camera.y += CameraVelocity;
+      }
 
-	    if (this.cursors.left.isDown)
-	    {
-	    	this.game.camera.x -= CameraVelocity;
-	    }
-	    else if (this.cursors.right.isDown)
-	    {
-	    	this.game.camera.x += CameraVelocity;
-	    }
-	}
+      if (this.cursors.left.isDown)
+      {
+        this.game.camera.x -= CameraVelocity;
+      }
+      else if (this.cursors.right.isDown)
+      {
+        this.game.camera.x += CameraVelocity;
+      }
+  }
 
-	drawBall (ball) {
-	const bmd = this.game.add.bitmapData(100, 100);
+  drawBall (ball) {
+  const bmd = this.game.add.bitmapData(100, 100);
 
     bmd.ctx.fillStyle = '#fff';
     bmd.ctx.shadowBlur = 10;
